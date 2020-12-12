@@ -1,1 +1,1 @@
-# aoc-2020-elixir
+# aoc_2020_elixir
