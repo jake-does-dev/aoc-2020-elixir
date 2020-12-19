@@ -3,32 +3,45 @@ defmodule PasswordPolicy do
     num_valid = for d <- data do
       mapping = extract(d)
 
-      mapping.password
+      num_occurrences = mapping.password
       |> String.codepoints()
       |> Enum.count(fn(x) -> x == mapping.char end)
-      |> do_transform(mapping.min, mapping.max)
+
+      cond do
+        mapping.first_value <= num_occurrences && num_occurrences <= mapping.last_value -> 1
+        true -> 0
+      end
     end
 
     Enum.sum(num_valid)
   end
 
-  def extract(raw_string) do
-    [min_max | [char | password]] = Regex.split(~r/ /, raw_string)
+  def num_valid_position_based(data) do
+    num_valid = for d <- data do
+      mapping = extract(d)
 
-    [min, max] =
-      Regex.split(~r/-/, min_max)
+      first = Enum.at(String.codepoints(mapping.password), mapping.first_value - 1)
+      last = Enum.at(String.codepoints(mapping.password), mapping.last_value - 1)
+
+      case {first, last} do
+        {first, first} when first == last -> 0
+        _ when first == mapping.char or last == mapping.char -> 1
+        _ -> 0
+      end
+    end
+
+    Enum.sum(num_valid)
+  end
+
+  defp extract(raw_string) do
+    [first_last | [char | password]] = Regex.split(~r/ /, raw_string)
+
+    [first_value, last_value] =
+      Regex.split(~r/-/, first_last)
       |> Enum.map(fn(x) -> String.to_integer(x) end)
 
     char = Regex.split(~r/:/, char)
 
-    %{min: min, max: max, char: hd(char), password: hd(password)}
-  end
-
-  def do_transform(num_occurrences, min, max) do
-    if min <= num_occurrences && num_occurrences <= max do
-      1
-    else
-      0
-    end
+    %{first_value: first_value, last_value: last_value, char: hd(char), password: hd(password)}
   end
 end
