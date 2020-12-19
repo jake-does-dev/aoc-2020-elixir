@@ -24,7 +24,7 @@ defmodule PasswordPolicy do
       last = Enum.at(String.codepoints(mapping.password), mapping.last_value - 1)
 
       case {first, last} do
-        {first, first} when first == last -> 0
+        _ when first == last -> 0
         _ when first == mapping.char or last == mapping.char -> 1
         _ -> 0
       end
