@@ -20,14 +20,14 @@ defmodule PasswordPolicy do
     num_valid = for d <- data do
       mapping = extract(d)
 
-      first = Enum.at(String.codepoints(mapping.password), mapping.first_value - 1)
-      last = Enum.at(String.codepoints(mapping.password), mapping.last_value - 1)
+      first = extract_value_at(mapping.password, mapping.first_value)
+      last = extract_value_at(mapping.password, mapping.last_value)
 
       cond do
         first == last -> 0
         first == mapping.char or last == mapping.char -> 1
         true -> 0
-      end
+      ends
     end
 
     Enum.sum(num_valid)
@@ -43,5 +43,9 @@ defmodule PasswordPolicy do
     char = Regex.split(~r/:/, char)
 
     %{first_value: first_value, last_value: last_value, char: hd(char), password: hd(password)}
+  end
+
+  defp extract_value_at(password, location) do
+    Enum.at(String.codepoints(password, location - 1))
   end
 end
