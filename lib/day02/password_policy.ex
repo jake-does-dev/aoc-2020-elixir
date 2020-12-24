@@ -27,7 +27,7 @@ defmodule PasswordPolicy do
         first == last -> 0
         first == mapping.char or last == mapping.char -> 1
         true -> 0
-      ends
+      end
     end
 
     Enum.sum(num_valid)
@@ -46,6 +46,6 @@ defmodule PasswordPolicy do
   end
 
   defp extract_value_at(password, location) do
-    Enum.at(String.codepoints(password, location - 1))
+    Enum.at(String.codepoints(password), location - 1)
   end
 end
