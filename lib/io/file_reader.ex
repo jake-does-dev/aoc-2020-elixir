@@ -5,8 +5,8 @@ defmodule FileReader do
     |> Enum.map(&String.to_integer/1)
   end
 
-  def read_lines(path) do
+  def read_lines(path, splitter \\ "\n") do
     File.read!(path)
-    |> String.split("\n")
+    |> String.split(splitter)
   end
 end
