@@ -18,6 +18,6 @@ defmodule PassportValidationTest do
 
   test "puzzle input field validation" do
     passports = FileReader.read_lines("test/day04/puzzleInput.txt", "\n\n")
-    assert 0 == PassportValidation.num_valid_passports(passports, true)
+    assert 186 == PassportValidation.num_valid_passports(passports, true)
   end
 end
