@@ -33,6 +33,7 @@ defmodule PassportValidation do
   defp extract_keys_with_validity_check(passport_data) do
     Enum.reduce(passport_data, MapSet.new(), fn entry, keys ->
       [key, val] = String.split(entry, ":")
+
       if valid?(key, val) do
         MapSet.put(keys, key)
       else
@@ -45,8 +46,12 @@ defmodule PassportValidation do
   defp valid?("iyr", val), do: between?(val, 2010, 2020)
   defp valid?("eyr", val), do: between?(val, 2020, 2030)
   defp valid?("hcl", val), do: String.match?(val, ~r/#[A-Fa-f0-9]{6}$/)
-  defp valid?("ecl", val), do: MapSet.member?(MapSet.new(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]), val)
+
+  defp valid?("ecl", val),
+    do: MapSet.member?(MapSet.new(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]), val)
+
   defp valid?("pid", val), do: String.match?(val, ~r/^\d{9}$/)
+
   defp valid?("hgt", val) do
     case Regex.run(~r/(\d+)(in|cm)/, val) do
       [_, amount, "cm"] -> between?(amount, 150, 193)
@@ -54,6 +59,7 @@ defmodule PassportValidation do
       nil -> false
     end
   end
+
   defp valid?("cid", _), do: true
   defp valid?(_, _), do: false
 
