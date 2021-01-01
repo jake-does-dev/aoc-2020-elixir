@@ -47,6 +47,7 @@ defmodule PassportValidation do
   defp valid?("eyr", val), do: between?(val, 2020, 2030)
   defp valid?("hcl", val), do: String.match?(val, ~r/#[A-Fa-f0-9]{6}$/)
   defp valid?("pid", val), do: String.match?(val, ~r/^\d{9}$/)
+  defp valid?("cid", _), do: true
 
   defp valid?("ecl", val),
     do: MapSet.member?(MapSet.new(["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]), val)
@@ -59,7 +60,6 @@ defmodule PassportValidation do
     end
   end
 
-  defp valid?("cid", _), do: true
   defp valid?(_, _), do: false
 
   defp between?(val, lower, upper) do
